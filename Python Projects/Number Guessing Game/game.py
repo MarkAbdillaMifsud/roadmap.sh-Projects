@@ -2,12 +2,14 @@ import random
 random.seed()
 
 def welcome_message():
+    """Prints out welcome message when application launches"""
     print("Welcome to the Number Guessing Game!")
     print("In this game, the AI will choose a random number between 1 and 100. Your objective is to guess that number!")
     print("Begin by choosing a difficulty to determine how many changes you get!")
     print("Try to guess the number in as few tries as possible.")
 
 def choose_difficulty():
+    """Processes user's difficulty choice"""
     print("Please select the difficulty level")
     print("1. Easy (10 chances)")
     print("2. Medium (5 chances)")
@@ -18,6 +20,7 @@ def choose_difficulty():
     return user_choice
 
 def set_chances(user_choice):
+    """Sets guess amount based on difficulty choice"""
     if user_choice == 1:
         chance_amount = 10
     elif user_choice == 2:
@@ -27,28 +30,11 @@ def set_chances(user_choice):
     return chance_amount
 
 def randomise_number():
+    """Generate a random number"""
     return random.randrange(1, 101)
 
-def victory_message():
-    print("You win!")
-
-def loss_message(answer):
-    print("You lose. The answer was " + str(answer))
-
-print(randomise_number())
-
-def main():
-    user_guess = 0
-    chance_amount = 0
-    random_number = randomise_number()
-    welcome_message()
-    user_choice = choose_difficulty()
-    while user_choice <= 0 or user_choice > 3:
-        print("Invalid input. Please try again.")
-        user_choice = int(input("Enter your choice: "))
-    
-    chance_amount = set_chances(user_choice)
-    random_number = randomise_number()
+def process_guess(chance_amount, random_number):
+    """Main guessing functionality"""
     while chance_amount > 0:
         user_guess = int(input("Enter your guess: "))
         if user_guess == random_number:
@@ -65,5 +51,42 @@ def main():
                     print("The secret number is larger than your guess")
             else:
                 loss_message(random_number)
+
+def victory_message():
+    """Prints win message"""
+    print("You win!")
+
+def loss_message(answer):
+    """Prints loss message"""
+    print("You lose. The answer was " + str(answer))
+
+def is_continue(user_progression_choice):
+    """Processes whether user wants to try again"""
+    while user_progression_choice.upper() != "Y" and user_progression_choice.upper() != "N":
+        if user_progression_choice.upper() == "Y":
+            return True
+        elif user_progression_choice.upper() == "N":
+            return False
+        else:
+            user_progression_choice = input("Invalid choice. Please try again: ")
+
+def main():
+    playing = True
+    user_guess = 0
+    chance_amount = 0
+    welcome_message()
+    while playing:
+        random_number = randomise_number()
+        user_choice = choose_difficulty()
+        while user_choice <= 0 or user_choice > 3:
+            print("Invalid input. Please try again.")
+            user_choice = int(input("Enter your choice: "))
+        chance_amount = set_chances(user_choice)
+        random_number = randomise_number()
+        process_guess(chance_amount, random_number)
+        user_progression_choice = input("Would you like to play another round? (Y/N)")
+        playing = is_continue(user_progression_choice)
+        if not playing:
+            exit()
 
 main()
