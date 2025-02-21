@@ -69,7 +69,7 @@ def victory_message(final_score):
     """Prints win message and gets username of player"""
     print("You win!")
     username = input("Enter your username to record your score: ")
-    save_scores(username, final_score)
+    update_scores(username, final_score)
 
 def loss_message(answer):
     """Prints loss message"""
@@ -90,15 +90,30 @@ def get_scores(filename="scores.csv"):
         print("Error loading scores:", e)
     return scores
 
-def save_scores(username, score, filename="scores.csv"):
-    """Saves the username and score to a CSV file"""
+def update_scores(username, score, filename="scores.csv"):
+    """Update the CSV file by adding the new score to the user's previous score. If the user doesn't exist, create a new entry"""
+    scores={}
     try:
-        with open(filename, mode='a', newline='') as file:
+        with open(filename, mode='r', newline='') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if row:
+                    scores[row[0]] = int(row[1])
+    except FileNotFoundError:
+        scores = {}
+    
+    if username in scores:
+        scores[username] += score
+    else:
+        scores[username] = score
+    
+    try:
+        with open(filename, mode='w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow([username, score])
+            for user, total in scores.items():
+                writer.writerow([user, total])
     except Exception as e:
         print("Error saving score:", e)
-
 
 def is_continue(user_progression_choice):
     """Processes whether user wants to try again"""
