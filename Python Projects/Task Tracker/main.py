@@ -1,5 +1,6 @@
 import os
 import json
+import sys
 
 TASKS_FILE = "tasks.json"
 
@@ -12,5 +13,25 @@ def initialise_tasks_file():
     else:
         print(f"{TASKS_FILE} already exists.")
 
-if __name__ == "__main__":
+def main():
     initialise_tasks_file()
+
+    if len(sys.argv) < 2:
+        print("Usage: task-cli <command> [arguments]")
+        return
+    
+    command = sys.argv[1]
+
+    if command == "add":
+        print("Add command invoked.")
+    elif command == "update":
+        print("Update command invoked.")
+    elif command == "delete":
+        print("Delete command invoked.")
+    elif command == "list":
+        print("List command invoked.")
+    else:
+        print("Unknown command. Available commands: add, update, delete, list")
+
+if __name__ == "__main__":
+    main()
