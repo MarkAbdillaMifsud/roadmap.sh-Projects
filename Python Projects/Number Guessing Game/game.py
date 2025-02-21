@@ -1,4 +1,5 @@
 import random
+import csv
 random.seed()
 
 def welcome_message():
@@ -33,15 +34,27 @@ def randomise_number():
     """Generate a random number"""
     return random.randrange(1, 101)
 
-def process_guess(chance_amount, random_number):
+def score_penalty(user_choice):
+    """Establishes penalty depending on difficulty choice"""
+    if user_choice == 1:
+        score_penalty = 50
+    elif user_choice == 2:
+        score_penalty = 25
+    elif user_choice == 3:
+        score_penalty = 10
+    return score_penalty
+
+def process_guess(chance_amount, random_number, user_choice):
     """Main guessing functionality"""
+    final_score = 600
     while chance_amount > 0:
         user_guess = int(input("Enter your guess: "))
         if user_guess == random_number:
-            victory_message()
+            victory_message(final_score)
             break
         else:
             chance_amount -= 1
+            final_score -= score_penalty(user_choice)
             print("Incorrect guess.")
             if chance_amount > 0:
                 print(f"You have {chance_amount} chances left.")
@@ -52,13 +65,40 @@ def process_guess(chance_amount, random_number):
             else:
                 loss_message(random_number)
 
-def victory_message():
-    """Prints win message"""
+def victory_message(final_score):
+    """Prints win message and gets username of player"""
     print("You win!")
+    username = input("Enter your username to record your score: ")
+    save_scores(username, final_score)
 
 def loss_message(answer):
     """Prints loss message"""
     print("You lose. The answer was " + str(answer))
+
+def get_scores(filename="scores.csv"):
+    """Loads scores from a CSV file and returns them as a list of tuples"""
+    scores =[]
+    try:
+        with open(filename, mode='r', newline='') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if row:
+                    scores.append((row[0], int(row[1])))
+    except FileNotFoundError:
+        print("No scores file found. Starting fresh.")
+    except Exception as e:
+        print("Error loading scores:", e)
+    return scores
+
+def save_scores(username, score, filename="scores.csv"):
+    """Saves the username and score to a CSV file"""
+    try:
+        with open(filename, mode='a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([username, score])
+    except Exception as e:
+        print("Error saving score:", e)
+
 
 def is_continue(user_progression_choice):
     """Processes whether user wants to try again"""
@@ -75,6 +115,13 @@ def main():
     user_guess = 0
     chance_amount = 0
     welcome_message()
+    scores = get_scores()
+    if scores:
+        print("\nCurrent High Scores:")
+        for username, score in scores:
+            print(f"{username}: {score}")
+    else:
+        print("\nNo high scores yet. Be the first to set one!")
     while playing:
         random_number = randomise_number()
         user_choice = choose_difficulty()
@@ -83,7 +130,7 @@ def main():
             user_choice = int(input("Enter your choice: "))
         chance_amount = set_chances(user_choice)
         random_number = randomise_number()
-        process_guess(chance_amount, random_number)
+        process_guess(chance_amount, random_number, user_choice)
         user_progression_choice = input("Would you like to play another round? (Y/N)")
         playing = is_continue(user_progression_choice)
         if not playing:
