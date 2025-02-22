@@ -13,6 +13,19 @@ def initialise_tasks_file():
     else:
         print(f"{TASKS_FILE} already exists.")
 
+def open_tasks_list():
+    """Opens the tasks list in read mode"""
+    if os.path.exists(TASKS_FILE):
+        with open(TASKS_FILE, 'r') as f:
+            try:
+                tasks = json.load(f)
+            except json.JSONDecodeError:
+                tasks = []
+            return tasks
+    else:
+        initialise_tasks_file()
+        return []
+
 def extract_task_description():
     """Gets description of task as provided by user"""
     if len(sys.argv) < 3:
@@ -24,7 +37,7 @@ def extract_task_description():
     return description
 
 def main():
-    initialise_tasks_file()
+    open_tasks_list()
 
     if len(sys.argv) > 1 and sys.argv[1] == "add":
         task_description = extract_task_description()
