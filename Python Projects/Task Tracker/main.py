@@ -13,25 +13,22 @@ def initialise_tasks_file():
     else:
         print(f"{TASKS_FILE} already exists.")
 
+def extract_task_description():
+    """Gets description of task as provided by user"""
+    if len(sys.argv) < 3:
+        print("Error: Task description not provided.")
+        print("Usage: python main.py add \"task description\"")
+        sys.exit(1)
+    
+    description = " ".join(sys.argv[2:])
+    return description
+
 def main():
     initialise_tasks_file()
 
-    if len(sys.argv) < 2:
-        print("Usage: task-cli <command> [arguments]")
-        return
-    
-    command = sys.argv[1]
-
-    if command == "add":
-        print("Add command invoked.")
-    elif command == "update":
-        print("Update command invoked.")
-    elif command == "delete":
-        print("Delete command invoked.")
-    elif command == "list":
-        print("List command invoked.")
-    else:
-        print("Unknown command. Available commands: add, update, delete, list")
+    if len(sys.argv) > 1 and sys.argv[1] == "add":
+        task_description = extract_task_description()
+        print("Task Description:", task_description)
 
 if __name__ == "__main__":
     main()
