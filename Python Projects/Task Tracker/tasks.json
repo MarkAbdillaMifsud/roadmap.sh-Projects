@@ -1,1 +1,16 @@
-[]
+[
+    {
+        "id": 1,
+        "description": "Buy groceries",
+        "status": "todo",
+        "createdAt": "2025-02-23T16:16:21.843821",
+        "updatedAt": "2025-02-23T16:16:21.843821"
+    },
+    {
+        "id": 2,
+        "description": "Get the Lies of P Platinum",
+        "status": "todo",
+        "createdAt": "2025-02-23T16:16:41.790758",
+        "updatedAt": "2025-02-23T16:16:41.790758"
+    }
+]
