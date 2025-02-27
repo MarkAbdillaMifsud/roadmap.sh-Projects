@@ -75,6 +75,13 @@ def add_task(description):
     print(f"Task added successfully (ID: {new_id})")
 
 def update_task(task_id, new_description):
+    """
+    Update an existing task description by task ID
+
+    Args:
+        task_id: int
+        new_description: string
+    """
     tasks = load_tasks_list()
 
     task_found = False
@@ -87,9 +94,31 @@ def update_task(task_id, new_description):
     
     if not task_found:
         print(f"Task with ID {task_id} not found.")
+    else:
+        save_tasks_list(tasks)
+        print(f"Task with ID {task_id} updated successfully.")
+
+def delete_task(task_id):
+    """
+    Delete an existing task from the JSON by task ID
+
+    Args:
+        task_id: int
+    """
+    tasks = load_tasks_list()
+
+    task_found = False
+    for task in tasks:
+        if task["id"] == task_id:
+            tasks.remove(task)
+            task_found = True
+            break
     
-    save_tasks_list(tasks)
-    print(f"Task with ID {task_id} updated successfully.")
+    if not task_found:
+        print(f"Task with ID {task_id} not found.")
+    else:
+        save_tasks_list(tasks)
+        print(f"Task with ID {task_id} deleted successfully.")
 
 def main():
     load_tasks_list()
@@ -112,6 +141,19 @@ def main():
             
             new_description = " ".join(sys.argv[3:])
             update_task(task_id, new_description)
+        elif sys.argv[1] == "delete":
+            if len(sys.argv) < 3:
+                print("Error: Task ID is required.")
+                print("Usage: python main.py update <task_id>")
+                sys.exit(1)
+            
+            try:
+                task_id = int(sys.argv[2])
+            except ValueError:
+                print("Error: Task ID should be an integer")
+                sys.exit(1)
+            
+            delete_task(task_id)
 
 if __name__ == "__main__":
     main()
