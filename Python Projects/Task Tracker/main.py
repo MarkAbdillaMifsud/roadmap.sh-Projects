@@ -1,6 +1,7 @@
 import os
 import json
 import sys
+from datetime import datetime
 
 TASKS_FILE = "tasks.json"
 
@@ -59,7 +60,6 @@ def add_task(description):
 
     new_id = generate_task_id(tasks)
 
-    from datetime import datetime
     now = datetime.now().isoformat()
     task = {
         "id": new_id,
@@ -74,12 +74,44 @@ def add_task(description):
 
     print(f"Task added successfully (ID: {new_id})")
 
+def update_task(task_id, new_description):
+    tasks = load_tasks_list()
+
+    task_found = False
+    for task in tasks:
+        if task["id"] == task_id:
+            task["description"] = new_description
+            task["updatedAt"] = datetime.now().isoformat()
+            task_found = True
+            break
+    
+    if not task_found:
+        print(f"Task with ID {task_id} not found.")
+    
+    save_tasks_list(tasks)
+    print(f"Task with ID {task_id} updated successfully.")
+
 def main():
     load_tasks_list()
 
-    if len(sys.argv) > 1 and sys.argv[1] == "add":
-        task_description = extract_task_description()
-        add_task(task_description)
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "add":
+            task_description = extract_task_description()
+            add_task(task_description)
+        elif sys.argv[1] == "update":
+            if len(sys.argv) < 4:
+                print("Error: Task ID and new description are required.")
+                print("Usage: python main.py update <task_id> \"new description\"")
+                sys.exit(1)
+            
+            try:
+                task_id = int(sys.argv[2])
+            except ValueError:
+                print("Error: Task ID should be an integer")
+                sys.exit(1)
+            
+            new_description = " ".join(sys.argv[3:])
+            update_task(task_id, new_description)
 
 if __name__ == "__main__":
     main()
