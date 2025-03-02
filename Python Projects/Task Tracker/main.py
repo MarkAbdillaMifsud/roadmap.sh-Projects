@@ -98,7 +98,7 @@ def update_task_description(task_id, new_description):
         save_tasks_list(tasks)
         print(f"Task with ID {task_id} updated successfully.")
 
-def update_task_status(task_id):
+def update_task_status(task_id, command):
     """Update an existing task status from to do to in-progress, by task ID
     
     Args:
@@ -110,13 +110,19 @@ def update_task_status(task_id):
     task_found = False
     for task in tasks:
         if task["id"] == task_id:
-            if task["status"] == "todo":
+            if command == "mark-in-progress":
                 task["status"] = "in-progress"
                 task["updatedAt"] = datetime.now().isoformat()
                 task_found = True
                 break
-            else:
-                print("Task is already in progress")
+            elif command == "mark-to-do":
+                task["status"] = "todo"
+                task["updatedAt"] = datetime.now().isoformat()
+                task_found = True
+                break
+            elif command == "mark-done":
+                task["status"] = "DONE!"
+                task["updatedAt"] = datetime.now().isoformat()
                 task_found = True
                 break
     
@@ -184,7 +190,7 @@ def main():
                 sys.exit(1)
             
             delete_task(task_id)
-        elif command == "mark-in-progress":
+        elif command == "mark-in-progress" or command == "mark-to-do" or command == "mark-done":
             if len(sys.argv) < 3:
                 print("Error: Task ID is required.")
                 print("Usage: python main.py update <task_id>")
@@ -195,9 +201,9 @@ def main():
             except ValueError:
                 print("Error: Task ID should be an integer")
                 sys.exit(1)
-            update_task_status(task_id)
+            update_task_status(task_id, command)
         else:
-            print("Command not recognized. Available commands: add, update, delete, mark-in-progress")
+            print("Command not recognized. Available commands: add, update, delete, mark-to-do, mark-in-progress, mark-done")
     else:
         print("Usage: python main.py <command> [arguments]")
 
