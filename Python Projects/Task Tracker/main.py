@@ -64,7 +64,12 @@ def generate_task_id(tasks):
     return max_id + 1
 
 def add_task(description):
+    """
+    Add new task based on user's description
 
+    Args:
+        description: string
+    """
     tasks = load_tasks_list()
 
     new_id = generate_task_id(tasks)
@@ -130,7 +135,7 @@ def update_task_status(task_id, command):
                 task_found = True
                 break
             elif command == "mark-done":
-                task["status"] = "DONE!"
+                task["status"] = "done"
                 task["updatedAt"] = datetime.now().isoformat()
                 task_found = True
                 break
@@ -181,6 +186,18 @@ def filter_tasks(status):
         for task in filtered_tasks:
             print(task)       
 
+def print_usage():
+    """Prints instructions on usage"""
+    print("Usage: python main.py <command> [arguments]")
+    print("Available commands:")
+    print("  add <task description>")
+    print("  update <task_id> \"new description\"")
+    print("  delete <task_id>")
+    print("  mark-to-do <task_id>")
+    print("  mark-in-progress <task_id>")
+    print("  mark-done <task_id>")
+    print("  filter <status>   (status can be: todo, in-progress, done)")
+
 def process_add():
     description = get_description(start_index=2)
     add_task(description)
@@ -188,7 +205,7 @@ def process_add():
 def process_update():
     if len(sys.argv) < 4:
         print("Error: Task ID and new description are required.")
-        print("Usage: python main.py update <task_id> \"new description\"")
+        print_usage()
         sys.exit(1)
     task_id = get_task_id()
     new_description = get_description(start_index=3)
@@ -206,29 +223,28 @@ def process_filter(status):
     filter_tasks(status)
 
 def main():
-    load_tasks_list()
-
     if len(sys.argv) < 2:
-        print("Usage: python main.py <command> [arguments]")
-        print("Available commands: add, update, delete, mark-to-do, mark-in-progress, mark-done, filter todo, filter in-progress, filter done")
-        sys.exit(1)
-        
+        print_usage()
+        sys.exit()
+    
     command = sys.argv[1]
 
-    if command == "add":
-        process_add()
-    elif command == "update":
-        process_update()
-    elif command == "delete":
-        process_delete()
-    elif command in ("mark-in-progress", "mark-to-do", "mark-done"):
-        process_status(command)
-    elif command == "filter":
-        status = sys.argv[2]
-        if status in ("todo", "in-progress", "done"):
-            process_filter(status)
+    command_dispatch = {
+        "add": process_add,
+        "update": process_update,
+        "delete": process_delete,
+        "mark-to-do": lambda: process_status("mark-to-do"),
+        "mark-in-progress": lambda: process_status("mark-in-progress"),
+        "mark-done": lambda: process_status("mark-done"),
+        "filter": lambda: process_filter(sys.argv[2] if len(sys.argv) >= 3 else print("Error: Status is required for filter."))
+    }
+
+    action = command_dispatch.get(command)
+    if action:
+        action()
     else:
-        print("Command not recognized. Available commands: add, update, delete, mark-to-do, mark-in-progress, mark-done, filter todo, filter in-progress, filter done")
+        print("Command not recognised")
+        print_usage()
 
 if __name__ == "__main__":
     main()
