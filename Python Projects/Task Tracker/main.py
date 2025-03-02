@@ -74,7 +74,7 @@ def add_task(description):
 
     print(f"Task added successfully (ID: {new_id})")
 
-def update_task(task_id, new_description):
+def update_task_description(task_id, new_description):
     """
     Update an existing task description by task ID
 
@@ -91,6 +91,34 @@ def update_task(task_id, new_description):
             task["updatedAt"] = datetime.now().isoformat()
             task_found = True
             break
+    
+    if not task_found:
+        print(f"Task with ID {task_id} not found.")
+    else:
+        save_tasks_list(tasks)
+        print(f"Task with ID {task_id} updated successfully.")
+
+def update_task_status(task_id):
+    """Update an existing task status from to do to in-progress, by task ID
+    
+    Args:
+        task_id: int
+    """
+
+    tasks = load_tasks_list()
+
+    task_found = False
+    for task in tasks:
+        if task["id"] == task_id:
+            if task["status"] == "todo":
+                task["status"] = "in-progress"
+                task["updatedAt"] = datetime.now().isoformat()
+                task_found = True
+                break
+            else:
+                print("Task is already in progress")
+                task_found = True
+                break
     
     if not task_found:
         print(f"Task with ID {task_id} not found.")
@@ -124,10 +152,12 @@ def main():
     load_tasks_list()
 
     if len(sys.argv) > 1:
-        if sys.argv[1] == "add":
+        command = sys.argv[1]
+
+        if command == "add":
             task_description = extract_task_description()
             add_task(task_description)
-        elif sys.argv[1] == "update":
+        elif command == "update":
             if len(sys.argv) < 4:
                 print("Error: Task ID and new description are required.")
                 print("Usage: python main.py update <task_id> \"new description\"")
@@ -140,8 +170,8 @@ def main():
                 sys.exit(1)
             
             new_description = " ".join(sys.argv[3:])
-            update_task(task_id, new_description)
-        elif sys.argv[1] == "delete":
+            update_task_description(task_id, new_description)
+        elif command == "delete":
             if len(sys.argv) < 3:
                 print("Error: Task ID is required.")
                 print("Usage: python main.py update <task_id>")
@@ -154,6 +184,22 @@ def main():
                 sys.exit(1)
             
             delete_task(task_id)
+        elif command == "mark-in-progress":
+            if len(sys.argv) < 3:
+                print("Error: Task ID is required.")
+                print("Usage: python main.py update <task_id>")
+                sys.exit(1)
+            
+            try:
+                task_id = int(sys.argv[2])
+            except ValueError:
+                print("Error: Task ID should be an integer")
+                sys.exit(1)
+            update_task_status(task_id)
+        else:
+            print("Command not recognized. Available commands: add, update, delete, mark-in-progress")
+    else:
+        print("Usage: python main.py <command> [arguments]")
 
 if __name__ == "__main__":
     main()
