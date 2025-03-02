@@ -163,6 +163,24 @@ def delete_task(task_id):
         save_tasks_list(tasks)
         print(f"Task with ID {task_id} deleted successfully.")
 
+def filter_tasks(status):
+    """Filter tasks depending on their completion status
+
+    Args:
+        status: string
+    
+    Return:
+        dict with filtered tasks
+    """
+    tasks = load_tasks_list()
+
+    filtered_tasks = [task for task in tasks if task.get("status", "").lower() == status.lower()]
+    if not filtered_tasks:
+        print(f"No tasks found with status {status}")
+    else:
+        for task in filtered_tasks:
+            print(task)       
+
 def process_add():
     description = get_description(start_index=2)
     add_task(description)
@@ -184,12 +202,15 @@ def process_status(command):
     task_id = get_task_id()
     update_task_status(task_id, command)
 
+def process_filter(status):
+    filter_tasks(status)
+
 def main():
     load_tasks_list()
 
     if len(sys.argv) < 2:
         print("Usage: python main.py <command> [arguments]")
-        print("Available commands: add, update, delete, mark-to-do, mark-in-progress, mark-done")
+        print("Available commands: add, update, delete, mark-to-do, mark-in-progress, mark-done, filter todo, filter in-progress, filter done")
         sys.exit(1)
         
     command = sys.argv[1]
@@ -202,8 +223,12 @@ def main():
         process_delete()
     elif command in ("mark-in-progress", "mark-to-do", "mark-done"):
         process_status(command)
+    elif command == "filter":
+        status = sys.argv[2]
+        if status in ("todo", "in-progress", "done"):
+            process_filter(status)
     else:
-        print("Command not recognized. Available commands: add, update, delete, mark-to-do, mark-in-progress, mark-done")
+        print("Command not recognized. Available commands: add, update, delete, mark-to-do, mark-in-progress, mark-done, filter todo, filter in-progress, filter done")
 
 if __name__ == "__main__":
     main()
