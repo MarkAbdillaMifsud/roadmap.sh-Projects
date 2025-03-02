@@ -31,15 +31,24 @@ def save_tasks_list(tasks):
     with open(TASKS_FILE, 'w') as f:
         json.dump(tasks, f, indent=4)
 
-def extract_task_description():
+def get_description(start_index=2):
     """Gets description of task as provided by user"""
-    if len(sys.argv) < 3:
+    if len(sys.argv) < start_index + 1:
         print("Error: Task description not provided.")
-        print("Usage: python main.py add \"task description\"")
         sys.exit(1)
-    
-    description = " ".join(sys.argv[2:])
-    return description
+    return " ".join(sys.argv[start_index:])
+
+def get_task_id():
+    """Gets task id as provided by user"""
+    if len(sys.argv) < 3:
+        print("Error: Task ID is required.")
+        print("Usage: python main.py <command> <task_id> [additional arguments]")
+        sys.exit(1)
+    try:
+        return int(sys.argv[2])
+    except ValueError:
+        print("Error: Task ID should be an integer.")
+        sys.exit(1)
 
 def generate_task_id(tasks):
     """Generate a unique task ID on existing tasks
@@ -154,58 +163,47 @@ def delete_task(task_id):
         save_tasks_list(tasks)
         print(f"Task with ID {task_id} deleted successfully.")
 
+def process_add():
+    description = get_description(start_index=2)
+    add_task(description)
+
+def process_update():
+    if len(sys.argv) < 4:
+        print("Error: Task ID and new description are required.")
+        print("Usage: python main.py update <task_id> \"new description\"")
+        sys.exit(1)
+    task_id = get_task_id()
+    new_description = get_description(start_index=3)
+    update_task_description(task_id, new_description)
+
+def process_delete():
+    task_id = get_task_id()
+    delete_task(task_id)
+
+def process_status(command):
+    task_id = get_task_id()
+    update_task_status(task_id, command)
+
 def main():
     load_tasks_list()
 
-    if len(sys.argv) > 1:
-        command = sys.argv[1]
-
-        if command == "add":
-            task_description = extract_task_description()
-            add_task(task_description)
-        elif command == "update":
-            if len(sys.argv) < 4:
-                print("Error: Task ID and new description are required.")
-                print("Usage: python main.py update <task_id> \"new description\"")
-                sys.exit(1)
-            
-            try:
-                task_id = int(sys.argv[2])
-            except ValueError:
-                print("Error: Task ID should be an integer")
-                sys.exit(1)
-            
-            new_description = " ".join(sys.argv[3:])
-            update_task_description(task_id, new_description)
-        elif command == "delete":
-            if len(sys.argv) < 3:
-                print("Error: Task ID is required.")
-                print("Usage: python main.py update <task_id>")
-                sys.exit(1)
-            
-            try:
-                task_id = int(sys.argv[2])
-            except ValueError:
-                print("Error: Task ID should be an integer")
-                sys.exit(1)
-            
-            delete_task(task_id)
-        elif command == "mark-in-progress" or command == "mark-to-do" or command == "mark-done":
-            if len(sys.argv) < 3:
-                print("Error: Task ID is required.")
-                print("Usage: python main.py update <task_id>")
-                sys.exit(1)
-            
-            try:
-                task_id = int(sys.argv[2])
-            except ValueError:
-                print("Error: Task ID should be an integer")
-                sys.exit(1)
-            update_task_status(task_id, command)
-        else:
-            print("Command not recognized. Available commands: add, update, delete, mark-to-do, mark-in-progress, mark-done")
-    else:
+    if len(sys.argv) < 2:
         print("Usage: python main.py <command> [arguments]")
+        print("Available commands: add, update, delete, mark-to-do, mark-in-progress, mark-done")
+        sys.exit(1)
+        
+    command = sys.argv[1]
+
+    if command == "add":
+        process_add()
+    elif command == "update":
+        process_update()
+    elif command == "delete":
+        process_delete()
+    elif command in ("mark-in-progress", "mark-to-do", "mark-done"):
+        process_status(command)
+    else:
+        print("Command not recognized. Available commands: add, update, delete, mark-to-do, mark-in-progress, mark-done")
 
 if __name__ == "__main__":
     main()

@@ -12,5 +12,12 @@
         "status": "DONE!",
         "createdAt": "2025-02-23T16:16:41.790758",
         "updatedAt": "2025-03-02T17:01:43.059189"
+    },
+    {
+        "id": 3,
+        "description": "Finish the Task Tracker",
+        "status": "in-progress",
+        "createdAt": "2025-03-02T17:40:00.091066",
+        "updatedAt": "2025-03-02T17:42:32.079995"
     }
 ]
