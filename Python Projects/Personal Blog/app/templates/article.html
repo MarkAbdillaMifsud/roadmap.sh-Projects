@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ article.title }}</title>
+    </head>
+    <body>
+        <h1> {{article.title}} </h1>
+        <p>Published on: {{ article.publication_date}}</p>
+        <div>
+            {{ article.content | safe}}
+        </div>
+    </body>
+</html>

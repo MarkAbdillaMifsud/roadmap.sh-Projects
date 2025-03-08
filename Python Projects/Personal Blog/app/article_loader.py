@@ -47,6 +47,23 @@ def load_all_articles(directory=ARTICLES_DIR):
                 print(f"Error processing {filepath}: {e}")
     return articles
 
+def get_article_by_slug(slug, directory=ARTICLES_DIR):
+    """
+    Searches for an article file that matches the given slug (filename without extension)
+    Returns the article data dictionary
+    """
+    for filename in os.listdir(directory):
+        if filename.endswith(".md"):
+            file_slug = os.path.splitext(filename)[0]
+            if file_slug == slug:
+                filepath = os.path.join(directory, filename)
+                try:
+                    return extract_article_data(filepath)
+                except Exception as e:
+                    print(f"Error processing {filepath}: {e}")
+                    return None
+    return None
+
 if __name__ == '__main__':
     # For testing purposes
     articles = load_all_articles()
