@@ -1,3 +1,8 @@
+---
+title: "First Article Test Title"
+publication_date: "2025-03-08"
+---
+
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. In semper tincidunt vestibulum. Ut non nisi urna. Integer vel tincidunt nunc, et consectetur ipsum. Maecenas pellentesque at est sit amet euismod. Donec mollis diam odio, sit amet commodo est consectetur et. Nam faucibus felis massa, sit amet posuere ligula molestie ac. Nam eu mollis sem. Nullam metus nulla, ultrices vel venenatis eu, condimentum id orci. Etiam rutrum ipsum sed ornare tempus. Praesent mattis tortor vehicula est maximus sodales.
 
 Ut fringilla arcu neque, tempus blandit ante maximus vitae. Proin et laoreet lacus, nec porttitor nunc. Cras condimentum viverra nulla. Aenean nec urna erat. Aenean porttitor orci eu ipsum porttitor pretium. Nullam dictum ipsum a vulputate cursus. Nullam sem arcu, vehicula lobortis finibus non, pharetra vitae ligula. Curabitur fringilla finibus urna, eget viverra eros porttitor sit amet. Sed convallis magna quis condimentum cursus. Sed urna leo, rhoncus quis mi quis, sodales sollicitudin leo. Phasellus lacinia facilisis vulputate. Nulla ultricies metus ultrices lorem rhoncus facilisis. Cras pellentesque id augue et porta. Donec sit amet consequat odio, quis euismod eros. Cras cursus aliquet commodo. Maecenas at magna vel purus dictum pellentesque et gravida purus.
