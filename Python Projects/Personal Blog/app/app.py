@@ -6,6 +6,7 @@ app = Flask(__name__, static_folder='static')
 @app.route('/')
 def home():
     articles = load_article_files()
+    print("Articles loaded:", articles)
     return render_template('home.html', articles=articles)
 
 @app.route('/about')
