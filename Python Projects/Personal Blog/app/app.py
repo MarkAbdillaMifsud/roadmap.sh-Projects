@@ -19,7 +19,10 @@ def article(slug):
     if article_data is None:
         abort(404)
     return render_template('article.html', article=article_data)
-    
+
+@app.route('/admin')
+def admin():
+    return render_template('admin.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
